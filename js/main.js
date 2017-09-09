@@ -1,7 +1,7 @@
 //get leaflet map set-up
 var map = L.map('map', {
   center: [43.045, -87.895],
-  zoom: 12,
+  zoom: 11,
 }).addLayer(new L.TileLayer("http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"));
 
 //set style for polygons
