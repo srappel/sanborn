@@ -21,6 +21,7 @@ Have an idea for a mapping project using this atlas? The mosaiced sheets are pub
 These sheets were georeferenced using ArcMap, and published on the UWM ArcGIS server. The application was built using Leaflet, a light-weight, flexible Javascript library created for web mapping.
 
 [Original Project Github](https://github.com/bellegis/sanborn-agsl)
+
 [Forked active repository](https://github.com/srappel/sanborn)
 
 # Credits
