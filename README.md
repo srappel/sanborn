@@ -23,7 +23,7 @@ These sheets were georeferenced using ArcMap, and published on the UWM ArcGIS se
 [Original Project Github](https://github.com/bellegis/sanborn-agsl)
 [Forked active repository](https://github.com/srappel/sanborn)
 
-### Credits
+# Credits
 
 Belle Lipton: Designer / Developer - [About Belle](https://www.linkedin.com/in/belle-lipton-81a90493)
 
