@@ -21,6 +21,17 @@ body {
     width: 100%;
 }
 
+#layerselect {
+    position: absolute !important;
+    top: 130px !important; 
+    right: 25px; 
+    z-index: 999999 !important;
+    height: 30px; 
+    width: 200px
+}
+
+
+
 
 /* BROWSER ADDS MARGIN BY DEFAULT. THIS GETS RID OF SCROLLBAR */
 
@@ -233,7 +244,7 @@ h1 {
 
 .close-about:hover,
 .close-about:focus {
-    color: black;
+    color: rgb(255, 189, 0); 
     text-decoration: none;
     cursor: pointer;
 }
@@ -593,6 +604,10 @@ h4 {
 	#make-history-box {
 		top:7.25em;
 	}
+
+    #layerselect {
+        top: 100px !important;
+    }
 			
 		
 	
@@ -719,9 +734,22 @@ h4 {
     /**********************************************************************/
     /* PHONE SCREEN SIZES (600px OR LESS) */
     @media (max-width: 600px) {
+		.geocoder-control-input {
+            left: 0.25em;
+            top: 10px;
+            position: absolute;
+        }
 		
-		
-		 .leaflet-control-layers {
+        #make-history-box {
+            display: none;
+        }
+
+        #layerselect {     
+            left:20px;       
+            top: 110px !important;
+        }
+
+		.leaflet-control-layers {
             background: rgba(255, 255, 255, 1);
             box-shadow: 0 0 2px 2px #707070;
             font-size: 16px;
@@ -858,3 +886,4 @@ h4 {
             padding-left: .3em;
         }
     }
+
