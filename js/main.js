@@ -4,7 +4,8 @@ var map;
 // DECLARE DEFAULT OPACITY IN GLOBAL SCOPE
 var currentOpacity = 1;
 
-var sheetBoundaries;
+var sheetBoundaries1910;
+var sheetBoundaries1894;
 var currentAddress;
 var searchResultMarker;
 
@@ -25,7 +26,7 @@ var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arc
 });
 
 // DECLARE SANBORN MAPS IN GLOBAL SCOPE
-var sanborn = L.esri.tiledMapLayer({
+var sanborn1910 = L.esri.tiledMapLayer({
     url: 'http://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
     maxZoom: 21,
     minZoom: 0,
@@ -34,7 +35,7 @@ var sanborn = L.esri.tiledMapLayer({
 });
 
 var sanborn1894 = L.esri.tiledMapLayer({
-    url: 'https://enviroatlas.epa.gov/arcgis/rest/services/Supplemental/Park_Prox_AllCommunities/MapServer',
+    url: 'http://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/TempVol1/MapServer',
     maxZoom: 21,
     minZoom: 0,
     opacity: .8, // Initial opacity
@@ -69,7 +70,7 @@ var mapOptions = {
     maxZoom: 21,
     maxBounds: L.latLngBounds([42.84, -87.82], [43.19, -88.07]), // panning bounds so the user doesn't pan too far away from Milwaukee
     bounceAtZoomLimits: false, // Set it to false if you don't want the map to zoom beyond min/max zoom and then bounce back when pinch-zooming
-    layers: [Esri_WorldGrayCanvas, sanborn], // Set the layers to build into the layer control
+    layers: [Esri_WorldGrayCanvas, sanborn1910], // Set the layers to build into the layer control
 }
 
 // CREATE A NEW LEAFLET MAP WITH THE MAP OPTIONS
@@ -83,52 +84,6 @@ map.zoomControl.setPosition('bottomright');
 var baseMaps = {
     "Grayscale": Esri_WorldGrayCanvas
 };
-
-/*// SET THE OVERLAYS
-var overlayMaps = {
-    "1910 Sanborn Maps": sanborn
-    // We can add the landmarks layer here when it is ready
-};
-
-// ADD THE LAYER CONTROL TO THE MAP
-var toggleControls = L.control.layers(baseMaps, overlayMaps,
-    {
-    collapsed: false // Keep the layer list open
-}).addTo(map);*/
-
-//
-// // WHEN SANBORNS ARE DESELECTED, HIDE OPACITY SLIDER
-/*$(".leaflet-control-layers input:checkbox").change(function() {
-    var ischecked= $(this).is(':checked');
-    if(!ischecked)
-        $('.opacity-slider').hide();
-});
-$(".leaflet-control-layers input:checkbox").change(function() {
-    var ischecked= $(this).is(':checked');
-    if(ischecked)
-        $('.opacity-slider').show();
-});*/
-
-// /* CREATE GETLAYER FUNCTION TO RETURN GEOJSON GLOBALLY AS "BOUNDARY LAYER" */
-// function getLayer (layer, sheetBoundaries){
-	// var boundaryLayer = layer;
-	// return boundaryLayer;
-// };
-
-
-// /* SET UP LISTENER -- ON LAYERADD TO THE MAP, CALL GET LAYER FUNCTION */
-// /* ON LAYER ADD: RETURN THE GEOJSON LAYER AS A GLOBAL VARIABLE */
-// /* ASSIGN THAT RETURNED LAYER TO VARIABLE "GLOBALLAYER"  */
-// var globalLayer = map.on('layeradd', getLayer);
-// console.log(globalLayer);
-
-
-
-// $("#make-history-text").change(function (e) {
-    // var ischecked = e.currentTarget.checked;
-    // if (ischecked) 
-        // checking.unbindPopup(popup);              
-// });
 
 /********************************************************************************/
 /* JAVASCRIPT RELATED TO SETTING UP THE OPACITY SLIDER */
@@ -180,13 +135,17 @@ $('#layerselect').on('change', function() {
   if (selected == 1910) {
      if(map.hasLayer(sanborn1894)) {        
         map.removeLayer(sanborn1894);
-        map.addLayer(sanborn);       
+        map.removeLayer(sheetBoundaries1894)
+        map.addLayer(sanborn1910);
+        map.addLayer(sheetBoundaries1910);       
      }
   }
   if (selected == 1894) {         
-       if(map.hasLayer(sanborn)) {        
-          map.removeLayer(sanborn);
+       if(map.hasLayer(sanborn1910)) {        
+          map.removeLayer(sanborn1910);
+          map.removeLayer(sheetBoundaries1910)
           map.addLayer(sanborn1894);
+          map.addLayer(sheetBoundaries1894);
        }      
   }      
 });
@@ -228,10 +187,10 @@ function getData(map) {
     map.addLayer(Esri_WorldImagery);
 
     // ADD THE SANBORNS
-    sanborn.addTo(map);
+    sanborn1910.addTo(map);
     
     //CALL THE UPDATEOPACITY() FUNCTION TO UPDATE THE MAP AS THE USER MOVES THE YEAR SLIDER
-    updateOpacity(sanborn, currentOpacity);
+    updateOpacity(sanborn1910, currentOpacity);
     updateOpacity(sanborn1894, currentOpacity);
 
 
@@ -319,7 +278,7 @@ function getData(map) {
     $.getJSON("data/boundaries_mercator.json", function (data) {
 
         // CREATE A LEAFLET GEOJSON LAYER FOR THE SHEET BOUNDARIES WITH POPUPS AND ADD TO THE MAP
-        sheetBoundaries = L.geoJson(data, {
+        sheetBoundaries1910 = L.geoJson(data, {
             // CREATE STYLING FOR THE BOUNDARY LAYER
             style: function (feature) {
                 return {
@@ -338,7 +297,31 @@ function getData(map) {
                 });
             }
         }).addTo(map);
+    });
 
+     // USE JQUERY'S GETJSON() METHOD TO LOAD THE SHEET BOUNDARY DATA ASYNCHRONOUSLY
+    $.getJSON("data/1894_boundaries_mercator.geojson", function (data) {
+
+        // CREATE A LEAFLET GEOJSON LAYER FOR THE SHEET BOUNDARIES WITH POPUPS AND ADD TO THE MAP
+        sheetBoundaries1894 = L.geoJson(data, {
+            // CREATE STYLING FOR THE BOUNDARY LAYER
+            style: function (feature) {
+                return {
+                    color: '#585858', // Stroke Color
+                    weight: 2, // Stroke Weight
+                    fillOpacity: 0, // Override the default fill opacity
+                    opacity: 0 // Border opacity
+                };
+            },
+            // LOOP THROUGH EACH FEATURE AND CREATE A POPUP
+            onEachFeature: function (feature, layer) {
+                layer.on('click', function (e) {
+                    buildPopupContent(feature, layer, e);
+                    addMarker(e)
+                    //sheetExtent(feature, layer);
+                });
+            }
+        });
     });
 
 	/********************************************************************************/
@@ -368,12 +351,22 @@ function getData(map) {
 		/* GET THE FEATURES FROM THE GEOJSON AND ADD TO A POPUP */
         var sheetname = "<div class= 'item-key'><b>Sheet Number:</b></div> <div class='item-value'>" + feature.properties['Sheet_Numb'] + "</div>";
 		var businesses = '';
-		for (var business in feature.properties){
-			var value = feature.properties['Business_P'];
-			if (value !== null){
-				businesses = "<div class= 'item-key' id = 'business'><b>Nearby Landmarks in 1910: </b></div><div class='item-value'>" + feature.properties['Business_P'] + "</div>";
-			}
-		}
+        if (map.hasLayer(sheetBoundaries1910)) {    
+            for (var business in feature.properties){
+                var value = feature.properties['Business_P'];
+                if (value !== null){
+                    businesses = "<div class= 'item-key' id = 'business'><b>Nearby Landmarks in 1910: </b></div><div class='item-value'>" + feature.properties['Business_P'] + "</div>";
+                }
+            }
+        } else if (map.hasLayer(sheetBoundaries1894)) {
+            for (var business in feature.properties){
+                var value = feature.properties['Business_P'];
+                if (value !== null){
+                    businesses = "<div class= 'item-key' id = 'business'><b>Nearby Landmarks in 1894: </b></div><div class='item-value'>" + feature.properties['Business_P'] + "</div>";
+                }
+            }     
+        } 
+		
 		var repository = "<div class= 'item-key'><b>Repository: </b></div><div class='item-value'>" + feature.properties['Repository'] + "</div>";
 		var view = "<div class= 'item-link'>" + '<a href="' + feature.properties['Reference'] + '" target= "_blank">' + 'View in UWM Digital Collections</a></div>';
 		var makeHistoryButton = "<div class = 'makeHistoryText'>Add information about historic building:</div>"
@@ -395,8 +388,12 @@ function getData(map) {
 		
         /* PUSH INFO TO POPUP USING RESPONSIVE POPUP PLUGIN SO THAT POPUPS ARE CENTERED ON MOBILE
         EVALUATE EFFICACY OF THIS PLUGIN -- IS THERE SOMETHING MORE EFFECTIVE OUT THERE? */
-        var popup = L.responsivePopup().setContent(info);	
-        sheetBoundaries.bindPopup(popup, {offset: new L.Point(60, 60)}).openPopup();	
+        var popup = L.responsivePopup().setContent(info);
+        if (map.hasLayer(sheetBoundaries1910)) {	
+            sheetBoundaries1910.bindPopup(popup, {offset: new L.Point(60,60)}).openPopup(); 
+        } else if (map.hasLayer(sheetBoundaries1894)) {
+            sheetBoundaries1894.bindPopup(popup, {offset: new L.Point(60,60)}).openPopup();     
+        }
     }
 	
 	function addMarker(e){
@@ -427,7 +424,7 @@ function getData(map) {
                 currentOpacity = Number($(this).val()) / 100;
 
                 // Change the opacity of the Sanborn maps to the current opacity
-                sanborn.setOpacity(currentOpacity);
+                sanborn1910.setOpacity(currentOpacity);
 
             });
         //BRACKET CLOSING UPDATE OPACITY
