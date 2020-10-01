@@ -425,6 +425,7 @@ function getData(map) {
 
                 // Change the opacity of the Sanborn maps to the current opacity
                 sanborn1910.setOpacity(currentOpacity);
+                sanborn1894.setOpacity(currentOpacity);
 
             });
         //BRACKET CLOSING UPDATE OPACITY
