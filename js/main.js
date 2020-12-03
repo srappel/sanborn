@@ -181,6 +181,7 @@ getData(map);
 
 // FUNCTION TO RETRIEVE DATA AND PLACE IT ON THE MAP (:
 function getData(map) {
+    console.log('were working');
     // ADD THE BASEMAPS
     map.addLayer(Esri_WorldGrayCanvas);
     map.addLayer(Esri_WorldGrayReference);
@@ -188,6 +189,7 @@ function getData(map) {
 
     // ADD THE SANBORNS
     sanborn1910.addTo(map);
+    sanborn1910.bringToFront() 
     
     //CALL THE UPDATEOPACITY() FUNCTION TO UPDATE THE MAP AS THE USER MOVES THE YEAR SLIDER
     updateOpacity(sanborn1910, currentOpacity);
