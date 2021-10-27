@@ -30,8 +30,6 @@ Belle Lipton: Designer / Developer - [About Belle](https://www.linkedin.com/in/b
 
 Lauren Winkler: Designer / Developer - [About Lauren](http://skeetidot.github.io/)
 
-Bob Cowling: Developer for 1894 layer updates to app - [About Bob](https://rcowling.github.io/)
-
 Marker based on a design created by Alex Kwa from the [Noun Project](https://thenounproject.com/)
 
 ## Special Thanks
