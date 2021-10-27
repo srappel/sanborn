@@ -30,7 +30,7 @@ var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arc
 
 // DECLARE SANBORN MAPS IN GLOBAL SCOPE
 var sanborn = L.esri.tiledMapLayer({
-    url: 'http://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
+    url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
     maxZoom: 21,
     minZoom: 0,
     opacity: .8, // Initial opacity
