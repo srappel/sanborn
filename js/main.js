@@ -26,13 +26,8 @@ var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arc
 });
 
 // DECLARE SANBORN MAPS IN GLOBAL SCOPE
-<<<<<<< Updated upstream
 var sanborn1910 = L.esri.tiledMapLayer({
-    url: 'http://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
-=======
-var sanborn = L.esri.tiledMapLayer({
     url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
->>>>>>> Stashed changes
     maxZoom: 21,
     minZoom: 0,
     opacity: .8, // Initial opacity
