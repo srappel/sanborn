@@ -27,7 +27,7 @@ var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arc
 
 // DECLARE SANBORN MAPS IN GLOBAL SCOPE
 var sanborn1910 = L.esri.tiledMapLayer({
-    url: 'http://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
+    url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
     maxZoom: 21,
     minZoom: 0,
     opacity: .8, // Initial opacity
@@ -35,7 +35,7 @@ var sanborn1910 = L.esri.tiledMapLayer({
 });
 
 var sanborn1894 = L.esri.tiledMapLayer({
-    url: 'http://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/TempVol1/MapServer',
+    url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/TempVol1/MapServer',
     maxZoom: 21,
     minZoom: 0,
     opacity: .8, // Initial opacity
@@ -302,7 +302,7 @@ function getData(map) {
     });
 
      // USE JQUERY'S GETJSON() METHOD TO LOAD THE SHEET BOUNDARY DATA ASYNCHRONOUSLY
-    $.getJSON("data/1894_boundaries_mercator.geojson", function (data) {
+    $.getJSON("data/1894_boundaries_mercator.json", function (data) {
 
         // CREATE A LEAFLET GEOJSON LAYER FOR THE SHEET BOUNDARIES WITH POPUPS AND ADD TO THE MAP
         sheetBoundaries1894 = L.geoJson(data, {
