@@ -35,7 +35,7 @@ var sanborn1910 = L.esri.tiledMapLayer({
 });
 
 var sanborn1894 = L.esri.tiledMapLayer({
-    url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/TempVol1/MapServer',
+    url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/Sanborn1894/MapServer',
     maxZoom: 21,
     minZoom: 0,
     opacity: .8, // Initial opacity
