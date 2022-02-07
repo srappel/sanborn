@@ -189,12 +189,18 @@ function getData(map) {
     map.addLayer(Esri_WorldImagery);
 
     // ADD THE SANBORNS
+
     sanborn1910.addTo(map);
     sanborn1910.bringToFront() 
     
     //CALL THE UPDATEOPACITY() FUNCTION TO UPDATE THE MAP AS THE USER MOVES THE YEAR SLIDER
     updateOpacity(sanborn1910, currentOpacity);
     updateOpacity(sanborn1894, currentOpacity);
+
+    // Set the layer selector to 1910
+
+    var layerselect = document.getElementById('layerselect')
+    layerselect.value = 1910
 
 
     /********************************************************************************/
