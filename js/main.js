@@ -30,7 +30,7 @@ var sanborn1910 = L.esri.tiledMapLayer({
     url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
     maxZoom: 21,
     minZoom: 0,
-    opacity: .8, // Initial opacity
+    opacity: .9, // Initial opacity
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
 
@@ -38,7 +38,8 @@ var sanborn1894 = L.esri.tiledMapLayer({
     url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/Sanborn1894/MapServer',
     maxZoom: 21,
     minZoom: 0,
-    opacity: .8, // Initial opacity
+    maxNativeZoom: 19, // Displays resampled level-19 tiles for zooms 20 and 21
+    opacity: .9, // Initial opacity
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
 
