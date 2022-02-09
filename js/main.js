@@ -28,17 +28,18 @@ var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arc
 // DECLARE SANBORN MAPS IN GLOBAL SCOPE
 var sanborn1910 = L.esri.tiledMapLayer({
     url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
-    maxZoom: 21,
+    maxZoom: 22,
     minZoom: 0,
+    maxNativeZoom: 21, // Displays resampled level-21 tiles for zoom 22
     opacity: .9, // Initial opacity
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
 
 var sanborn1894 = L.esri.tiledMapLayer({
     url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/Sanborn1894/MapServer',
-    maxZoom: 21,
+    maxZoom: 22,
     minZoom: 0,
-    maxNativeZoom: 19, // Displays resampled level-19 tiles for zooms 20 and 21
+    maxNativeZoom: 19, // Displays resampled level-19 tiles for zooms 20-22
     opacity: .9, // Initial opacity
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
@@ -47,7 +48,7 @@ var sanborn1894 = L.esri.tiledMapLayer({
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     minZoom: 17,
     maxNativeZoom: 20,
-    maxZoom: 21
+    maxZoom: 22
 });
 
 // CREATE MARKER
@@ -68,7 +69,7 @@ var mapOptions = {
     center: [43.041734, -87.904980], // centered in Downtown Milwaukee
     zoom: 14,
     minZoom: 11,
-    maxZoom: 21,
+    maxZoom: 22,
     maxBounds: L.latLngBounds([42.84, -87.82], [43.19, -88.07]), // panning bounds so the user doesn't pan too far away from Milwaukee
     bounceAtZoomLimits: false, // Set it to false if you don't want the map to zoom beyond min/max zoom and then bounce back when pinch-zooming
     layers: [Esri_WorldGrayCanvas, sanborn1910], // Set the layers to build into the layer control
