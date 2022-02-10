@@ -16,12 +16,12 @@ var geocodeService = L.esri.Geocoding.geocodeService();
 // DECLARE BASEMAPS IN GLOBAL SCOPE
 
 // GREY BASEMAP
-var Esri_WorldGrayCanvas = L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+var Esri_WorldGrayCanvas = L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 16
 });
 
 // GREY BASEMAP LABELS
-var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 16
 });
 
@@ -39,7 +39,7 @@ var sanborn1894 = L.esri.tiledMapLayer({
     url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/Sanborn1894/MapServer',
     maxZoom: 22,
     minZoom: 0,
-    maxNativeZoom: 19, // Displays resampled level-19 tiles for zooms 20-22
+    maxNativeZoom: 20, // Displays resampled level-20 tiles for zooms 21-22
     opacity: .9, // Initial opacity
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
