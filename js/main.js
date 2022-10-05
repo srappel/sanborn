@@ -31,6 +31,7 @@ var sanborn1910 = L.esri.tiledMapLayer({
     maxZoom: 22,
     minZoom: 0,
     maxNativeZoom: 21, // Displays resampled level-21 tiles for zoom 22
+    minNativeZoom: 12,
     opacity: .9, // Initial opacity
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
@@ -40,6 +41,7 @@ var sanborn1894 = L.esri.tiledMapLayer({
     maxZoom: 22,
     minZoom: 0,
     maxNativeZoom: 20, // Displays resampled level-20 tiles for zooms 21-22
+    minNativeZoom: 12,
     opacity: .9, // Initial opacity
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
