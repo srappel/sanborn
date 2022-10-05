@@ -4,14 +4,14 @@ var map;
 // DECLARE DEFAULT OPACITY IN GLOBAL SCOPE
 var currentOpacity = 1;
 
-var sheetBoundaries1910;
-var sheetBoundaries1894;
+var sheetBoundaries;
 var currentAddress;
 var searchResultMarker;
 
 // DECLARE GLOBAL VARIABLES FOR GEOCODING
 var arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider();
 var geocodeService = L.esri.Geocoding.geocodeService();
+
 
 // DECLARE BASEMAPS IN GLOBAL SCOPE
 
@@ -25,7 +25,11 @@ var Esri_WorldGrayReference = L.tileLayer('https://services.arcgisonline.com/arc
     maxZoom: 16
 });
 
+
+
+
 // DECLARE SANBORN MAPS IN GLOBAL SCOPE
+
 var sanborn1910 = L.esri.tiledMapLayer({
     url: 'https://webgis.uwm.edu/arcgisuwm/rest/services/AGSL/SanbornMaps/MapServer',
     maxZoom: 22,
@@ -46,12 +50,14 @@ var sanborn1894 = L.esri.tiledMapLayer({
     attribution: 'American Geographical Society Library, University of Wisconsin-Milwaukee'
 });
 
+
 // WORLD IMAGERY (FOR AT DETAILED SCALES)
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     minZoom: 17,
     maxNativeZoom: 20,
     maxZoom: 22
 });
+
 
 // CREATE MARKER
 // MODIFIED FROM AN ICON CREATED BY ALEX KWA, THE NOUN PROJECT
@@ -66,6 +72,7 @@ var goldMarker = L.icon({
     shadowSize: [41, 41]
 });
 
+
 // SET THE MAP OPTIONS
 var mapOptions = {
     center: [43.041734, -87.904980], // centered in Downtown Milwaukee
@@ -74,20 +81,77 @@ var mapOptions = {
     maxZoom: 22,
     maxBounds: L.latLngBounds([42.84, -87.82], [43.19, -88.07]), // panning bounds so the user doesn't pan too far away from Milwaukee
     bounceAtZoomLimits: false, // Set it to false if you don't want the map to zoom beyond min/max zoom and then bounce back when pinch-zooming
-    layers: [Esri_WorldGrayCanvas, sanborn1910], // Set the layers to build into the layer control
+    layers: [Esri_WorldGrayCanvas, sanborn], // Set the layers to build into the layer control
 }
+
 
 // CREATE A NEW LEAFLET MAP WITH THE MAP OPTIONS
 var map = L.map('map', mapOptions);
 
+
 // ADD THE ZOOM CONTROL IN THE BOTTOM RIGHT CORNER
 map.zoomControl.setPosition('bottomright');
+
+
+
 
 // SET THE BASEMAP
 // ONLY INCULDE ONE BASEMAP SO IT IS NOT PART OF THE LAYER LIST
 var baseMaps = {
     "Grayscale": Esri_WorldGrayCanvas
 };
+
+// SET THE OVERLAYS
+var overlayMaps = {
+    "1910 Sanborn Maps": sanborn
+    // We can add the landmarks layer here when it is ready
+};
+
+// ADD THE LAYER CONTROL TO THE MAP
+var toggleControls = L.control.layers(baseMaps, overlayMaps,
+    {
+    collapsed: false // Keep the layer list open
+}).addTo(map);
+
+//
+// // WHEN SANBORNS ARE DESELECTED, HIDE OPACITY SLIDER
+$(".leaflet-control-layers input:checkbox").change(function() {
+    var ischecked= $(this).is(':checked');
+    if(!ischecked)
+        $('.opacity-slider').hide();
+});
+$(".leaflet-control-layers input:checkbox").change(function() {
+    var ischecked= $(this).is(':checked');
+    if(ischecked)
+        $('.opacity-slider').show();
+});
+
+
+
+
+// /* CREATE GETLAYER FUNCTION TO RETURN GEOJSON GLOBALLY AS "BOUNDARY LAYER" */
+// function getLayer (layer, sheetBoundaries){
+	// var boundaryLayer = layer;
+	// return boundaryLayer;
+// };
+
+
+// /* SET UP LISTENER -- ON LAYERADD TO THE MAP, CALL GET LAYER FUNCTION */
+// /* ON LAYER ADD: RETURN THE GEOJSON LAYER AS A GLOBAL VARIABLE */
+// /* ASSIGN THAT RETURNED LAYER TO VARIABLE "GLOBALLAYER"  */
+// var globalLayer = map.on('layeradd', getLayer);
+// console.log(globalLayer);
+
+
+
+// $("#make-history-text").change(function (e) {
+    // var ischecked = e.currentTarget.checked;
+    // if (ischecked) 
+        // checking.unbindPopup(popup);              
+// });
+
+
+
 
 /********************************************************************************/
 /* JAVASCRIPT RELATED TO SETTING UP THE OPACITY SLIDER */
@@ -133,26 +197,7 @@ var baseMaps = {
 })();
 // END OF OPACITY SLIDER JAVASCRIPT
 
-// JAVASCRIPT DEALING WITH THE LAYER SELECTOR DROPDOWN MENU //
-$('#layerselect').on('change', function() {  
-  var selected = this.value;
-  if (selected == 1910) {
-     if(map.hasLayer(sanborn1894)) {        
-        map.removeLayer(sanborn1894);
-        map.removeLayer(sheetBoundaries1894)
-        map.addLayer(sanborn1910);
-        map.addLayer(sheetBoundaries1910);       
-     }
-  }
-  if (selected == 1894) {         
-       if(map.hasLayer(sanborn1910)) {        
-          map.removeLayer(sanborn1910);
-          map.removeLayer(sheetBoundaries1910)
-          map.addLayer(sanborn1894);
-          map.addLayer(sheetBoundaries1894);
-       }      
-  }      
-});
+
 
 function touchHandler(event) {
     var touch = event.changedTouches[0];
@@ -183,22 +228,25 @@ function init() {
 /* CALL GET DATA FUNCTION */
 getData(map);
 
+
 // FUNCTION TO RETRIEVE DATA AND PLACE IT ON THE MAP (:
 function getData(map) {
-    console.log('were working');
+
+
     // ADD THE BASEMAPS
     map.addLayer(Esri_WorldGrayCanvas);
     map.addLayer(Esri_WorldGrayReference);
     map.addLayer(Esri_WorldImagery);
+
 
     // ADD THE SANBORNS
 
     sanborn1910.addTo(map);
     sanborn1910.bringToFront() 
     
+
     //CALL THE UPDATEOPACITY() FUNCTION TO UPDATE THE MAP AS THE USER MOVES THE YEAR SLIDER
-    updateOpacity(sanborn1910, currentOpacity);
-    updateOpacity(sanborn1894, currentOpacity);
+    updateOpacity(sanborn, currentOpacity);
 
     // Set the layer selector to 1910
 
@@ -271,6 +319,11 @@ function getData(map) {
         }
     });
 
+
+
+
+
+
     /********************************************************************************/
     /* JAVASCRIPT TO HIDE SEARCH BAR WHEN POPUPS ARE ENABLED IN MOBILE
     DEFINITELY NOT PERFECT, CAN BE SLEEKER IN LATER ITERATIONS. IF SEARCH BAR CODE CHANGES,
@@ -285,12 +338,16 @@ function getData(map) {
         });
     }
 
+
+
     /********************************************************************************/
     // USE JQUERY'S GETJSON() METHOD TO LOAD THE SHEET BOUNDARY DATA ASYNCHRONOUSLY
     $.getJSON("data/boundaries_mercator.json", function (data) {
 
         // CREATE A LEAFLET GEOJSON LAYER FOR THE SHEET BOUNDARIES WITH POPUPS AND ADD TO THE MAP
-        sheetBoundaries1910 = L.geoJson(data, {
+        sheetBoundaries = L.geoJson(data, {
+
+
             // CREATE STYLING FOR THE BOUNDARY LAYER
             style: function (feature) {
                 return {
@@ -300,6 +357,8 @@ function getData(map) {
                     opacity: 0 // Border opacity
                 };
             },
+
+
             // LOOP THROUGH EACH FEATURE AND CREATE A POPUP
             onEachFeature: function (feature, layer) {
                 layer.on('click', function (e) {
@@ -309,32 +368,11 @@ function getData(map) {
                 });
             }
         }).addTo(map);
+
     });
 
      // USE JQUERY'S GETJSON() METHOD TO LOAD THE SHEET BOUNDARY DATA ASYNCHRONOUSLY
     $.getJSON("data/1894_boundaries_mercator.json", function (data) {
-
-        // CREATE A LEAFLET GEOJSON LAYER FOR THE SHEET BOUNDARIES WITH POPUPS AND ADD TO THE MAP
-        sheetBoundaries1894 = L.geoJson(data, {
-            // CREATE STYLING FOR THE BOUNDARY LAYER
-            style: function (feature) {
-                return {
-                    color: '#585858', // Stroke Color
-                    weight: 2, // Stroke Weight
-                    fillOpacity: 0, // Override the default fill opacity
-                    opacity: 0 // Border opacity
-                };
-            },
-            // LOOP THROUGH EACH FEATURE AND CREATE A POPUP
-            onEachFeature: function (feature, layer) {
-                layer.on('click', function (e) {
-                    buildPopupContent(feature, layer, e);
-                    addMarker(e)
-                    //sheetExtent(feature, layer);
-                });
-            }
-        });
-    });
 
 	/********************************************************************************/
 	/* POPULATE THE POPUP USING ATTRIBUTES FROM THE GEOJSON BOUNDARY DATA */
@@ -356,29 +394,23 @@ function getData(map) {
         // });
 
         // var popupCurrentSubheading = "<div class='item-key'><b>THIS LOCATION TODAY</b></div>"
-		// var popupHistoricSubheading = "<div class='item-key'><b>THIS LOCATION IN 1910</b></div>"		
-		
-		/********************************************************************************/ 
+		// var popupHistoricSubheading = "<div class='item-key'><b>THIS LOCATION IN 1910</b></div>"
 
+        
+		
+		
+		
+		
+		/********************************************************************************/        
 		/* GET THE FEATURES FROM THE GEOJSON AND ADD TO A POPUP */
         var sheetname = "<div class= 'item-key'><b>Sheet Number:</b></div> <div class='item-value'>" + feature.properties['Sheet_Numb'] + "</div>";
 		var businesses = '';
-        if (map.hasLayer(sheetBoundaries1910)) {    
-            for (var business in feature.properties){
-                var value = feature.properties['Business_P'];
-                if (value !== null){
-                    businesses = "<div class= 'item-key' id = 'business'><b>Nearby Landmarks in 1910: </b></div><div class='item-value'>" + feature.properties['Business_P'] + "</div>";
-                }
-            }
-        } else if (map.hasLayer(sheetBoundaries1894)) {
-            for (var business in feature.properties){
-                var value = feature.properties['Business_P'];
-                if (value !== null){
-                    businesses = "<div class= 'item-key' id = 'business'><b>Nearby Landmarks in 1894: </b></div><div class='item-value'>" + feature.properties['Business_P'] + "</div>";
-                }
-            }     
-        } 
-		
+		for (var business in feature.properties){
+			var value = feature.properties['Business_P'];
+			if (value !== null){
+				businesses = "<div class= 'item-key' id = 'business'><b>Nearby Landmarks in 1910: </b></div><div class='item-value'>" + feature.properties['Business_P'] + "</div>";
+			}
+		}
 		var repository = "<div class= 'item-key'><b>Repository: </b></div><div class='item-value'>" + feature.properties['Repository'] + "</div>";
 		var view = "<div class= 'item-link'>" + '<a href="' + feature.properties['Reference'] + '" target= "_blank">' + 'View in UWM Digital Collections</a></div>';
 		var makeHistoryButton = "<div class = 'makeHistoryText'>Add information about historic building:</div>"
@@ -392,32 +424,47 @@ function getData(map) {
 		var designation = 'If provided, please enter the title of the building on the map: <p>(e.g. Pabst Theater, Street Car Barn, Bowling Alley, etc.)<br><input type="text" name="designation"></p><br><br>';
 		var historicBlogs = 'Link to article or blog related to history of this property:<br><input type="text" name="historicBlogs"><br><br>';
 		var comments = 'Tell us something about this property<br><input type="text" name="comments"><br>';
-		var submitHistory =  '<input type="submit" value="Submit">'	
+		var submitHistory =  '<input type="submit" value="Submit">'
+		
+		
 		
 		// var form = '<form id = "contribute-history-form">Historic street address:<br><input type="text" name="historicAddress"><br><br>Is this a:<br> <input type="radio" name="buildingCode" value="D" checked>D - Dwelling<br><input type="radio" name="buildingCode" value="S">S - Store <br><input type="radio" name="buildingCode" value="F">F - Flat <br><input type="radio" name="buildingCode" value="O">Other -- Not marked with D, S, or F<br><br>If provided, please enter the title of the building on the map: <p>(e.g. Pabst Theater, Street Car Barn, Bowling Alley, etc.)<br><input type="text" name="designation"></p><br><br>Link to article or blog related to history of this property:<br><input type="text" name="historicBlogs"><br><br> Tell us something about this property<br><input type="text" name="comments"><br><input type="submit" value="Submit"></form>';
-		        		
+		        
+		
+		
+		
         var info = (sheetname + businesses + view);
+		
+		
+		
+
+
 		
         /* PUSH INFO TO POPUP USING RESPONSIVE POPUP PLUGIN SO THAT POPUPS ARE CENTERED ON MOBILE
         EVALUATE EFFICACY OF THIS PLUGIN -- IS THERE SOMETHING MORE EFFECTIVE OUT THERE? */
-        var popup = L.responsivePopup().setContent(info);
-        if (map.hasLayer(sheetBoundaries1910)) {	
-            sheetBoundaries1910.bindPopup(popup, {offset: new L.Point(60,60)}).openPopup(); 
-        } else if (map.hasLayer(sheetBoundaries1894)) {
-            sheetBoundaries1894.bindPopup(popup, {offset: new L.Point(60,60)}).openPopup();     
-        }
+        var popup = L.responsivePopup().setContent(info);	
+        sheetBoundaries.bindPopup(popup, {offset: new L.Point(60, 60)}).openPopup();
     }
+	
+	
 	
 	function addMarker(e){
 		// Add marker to map at click location; add popup window
 		var newMarker = new L.marker(e.latlng, {icon: goldMarker}).addTo(map);
 		map.on('popupclose', function(e){
 				map.removeLayer(newMarker);
-		});
+			});
 	}
-       
+	
 
-    //    /* BRACKET CLOSING ASYNCHsRONOUS GETJSON () METHOD
+	
+	
+	
+	
+
+
+
+    //    /* BRACKET CLOSING ASYNCHRONOUS GETJSON () METHOD
     //    ANY CODE THAT ENGAGES WITH THE BOUNDARY DATA LATER MUST BE IN THE FUNCTION THAT HAS JUST ENDED*/
     //});
 
@@ -436,16 +483,21 @@ function getData(map) {
                 currentOpacity = Number($(this).val()) / 100;
 
                 // Change the opacity of the Sanborn maps to the current opacity
-                sanborn1910.setOpacity(currentOpacity);
-                sanborn1894.setOpacity(currentOpacity);
+                sanborn.setOpacity(currentOpacity);
 
             });
         //BRACKET CLOSING UPDATE OPACITY
         //WHATEVER FUNCTION IS LAST PLEASE ADD COMMENT DENOTING END OF FUNCTION
         //THIS IS WHERE IT CAN GET CONFUSING
     }
+
+
     // BRACKET CLOSING THE GETDATA FUNCTION
 }
+
+
+
+
 
 /********************************************************************************/
 /* JAVASCRIPT RELATED TO OPENING AND CLOSING THE DATA AND ABOUT INFORMATION WINDOWS */
@@ -455,6 +507,8 @@ var aboutModal = document.getElementById('about-modal');
 
 // GET THE IDS OF THE BUTTONS THAT OPEN THE MODALS
 var aboutBtn = document.getElementById("about-button");
+
+
 
 // GET THE <SPAN> ELEMENT THAT CLOSES THE MODAL
 var aboutSpan = document.getElementsByClassName("close-about")[0];
@@ -468,6 +522,13 @@ aboutBtn.onclick = function () {
 aboutSpan.onclick = function () {
     aboutModal.style.display = "none";
 }
+
+
+
+
+
+
+
 
 //*************************************END OF MAIN.JS***********************************/
 
